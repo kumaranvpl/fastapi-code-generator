@@ -32,6 +32,8 @@ def get_imports(parser: OpenAPIParser, model_path: Path) -> Dict[str, object]:
             )
     for from_, imports_ in parser.imports_for_fastapi.items():
         imports[from_].update(imports_)
+    # Following line is to remove `from .models import HTTPValidationError, Item` line from main.py file
+    imports.pop(".models")
     return {'imports': imports}
 
 
