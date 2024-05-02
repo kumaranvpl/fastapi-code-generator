@@ -12,6 +12,7 @@ jobs:
       matrix:
         python-version: ["3.8", "3.9", "3.10", "3.11", "3.12"]
         os: [ubuntu-latest, windows-latest, macos-latest]
+        pydantic-version: ["1", "2"]
 
     steps:
     - uses: actions/checkout@v4
@@ -25,10 +26,21 @@ jobs:
       uses: actions/setup-python@v5
       with:
         python-version: ${{ matrix.python-version }}
+    - name: Update pip
+      run: |
+        pip install --upgrade pip
     - name: Install dependencies
       run: |
         python -m pip install poetry
         poetry install
+    - name: Install Pydantic V1
+      if: matrix.pydantic-version == '1'
+      run: |
+        pip install "pydantic<2"
+    - name: Install Pydantic V2
+      if: matrix.pydantic-version == '2'
+      run: |
+        pip install "pydantic>=2,<3"
     - name: Lint
       if: matrix.os != 'windows-latest'
       run: |
@@ -42,9 +54,7 @@ jobs:
       run: |
         ./scripts/poetry_test.bat
 
-  check: # This job does nothing and is only used for the branch protection
-    if: github.event.pull_request.draft == false
-    
+  check: # This job does nothing and is only used for the branch protection    
     needs:
       - test
 
