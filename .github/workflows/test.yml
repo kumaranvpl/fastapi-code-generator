@@ -36,11 +36,11 @@ jobs:
     - name: Install Pydantic V1
       if: matrix.pydantic-version == '1'
       run: |
-        pip install "pydantic<2"
+        poetry run pip install "pydantic<2"
     - name: Install Pydantic V2
       if: matrix.pydantic-version == '2'
       run: |
-        pip install "pydantic>=2,<3"
+        poetry run pip install "pydantic>=2,<3"
     - name: Lint
       if: matrix.os != 'windows-latest'
       run: |
